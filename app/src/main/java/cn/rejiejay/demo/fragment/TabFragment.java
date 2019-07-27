@@ -1,5 +1,6 @@
 package cn.rejiejay.demo.fragment;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import cn.rejiejay.demo.MainActivity;
 import cn.rejiejay.demo.R;
 
 public class TabFragment extends Fragment {
@@ -20,6 +22,20 @@ public class TabFragment extends Fragment {
      * 要依赖于静态的工厂方法
      */
     public String mmmtitle;
+
+
+    /**
+     * 这个就是为了实现事件分发的
+     * 而是通过 Fragment 触发事件，然后Activity去进行相应操作
+     */
+    public static interface OnTitle_OnClick {
+        void onClick(String title);
+    }
+    public OnTitle_OnClick mListrner;
+    public void setOnTitleClickListenrt(OnTitle_OnClick listrner) {
+        mListrner = listrner;
+    }
+
 
     /**
      * 这个方法是从其他地方传值进来，
@@ -91,9 +107,60 @@ public class TabFragment extends Fragment {
         mTV = view.findViewById(R.id.tv_title);
 
         /**
-         * 这里的mmmtitle 是从其他地方传值进来的
+         * 这里的 mmtitle 是从其他地方传值进来的
          * 早在前面的生命周期已经初始化好了
          */
         mTV.setText(mmmtitle);
+
+        /**
+         * 绑定点击事件的目的是为了 传值
+         */
+        mTV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                /**
+                 * 第一种传值的方法是通过获取main Activity
+                 * 但是这里应该是会报错的
+                 */
+//                MainActivity activity = (MainActivity) getActivity();
+//                activity.changeTitle2("1111122222");
+
+                /**
+                 * 第二种传值的方法是通过获取main Activity
+                 * 一定程度上确实是可以这样做，可以避免崩溃的问题；
+                 * 但是这种代码必须要有预知能力，其实有更好的方法、
+                 */
+//                Activity mActivity = getActivity();
+//                if (mActivity instanceof MainActivity) {
+//                    ((MainActivity) mActivity).changeTitle2("1111122222");
+//                }
+
+                /**
+                 * 可以换一种思考方式，不是调用那里的方法，而是通过 Fragment 触发事件，然后Activity去进行相应
+                 * 这种叫做事件分发？
+                 */
+                if (mListrner != null) {
+                    mListrner.onClick("1231321321312");
+                }
+
+
+//                SecondActivity: TabFragment;
+            }
+        });
+    }
+
+    /**
+     * 因为这个方法就相当于一个普通的类，所以要注意并发的问题
+     */
+    public void changeTitle(String name) {
+
+        /**
+         * 为了保证初始化完成才可进行调用的方法
+         */
+        if (!isAdded()) {
+            return;
+        }
+
+        mTV.setText(name);
     }
 }
