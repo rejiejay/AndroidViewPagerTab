@@ -1,0 +1,2 @@
+# AndroidViewPagerTab
+用ViewPager和FragmentPagerAdapter实现多页面滑动效果，底部Tab的指示器动画特效，扩展ViewPager实现透明度渐变、旋转等特效。
