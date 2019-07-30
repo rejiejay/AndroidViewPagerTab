@@ -38,8 +38,7 @@ public class TabFragment extends Fragment {
 
 
     /**
-     * 这个方法是从其他地方传值进来，
-     * 目的是 初始化title
+     * 这个方法主要目的是 通过 bundle 传递数据 title
      *
      * @param inputTitle 外部传值进来的title
      */
@@ -47,7 +46,7 @@ public class TabFragment extends Fragment {
         /**
          * Bundle作用？
          * 因为 TabFragment 需要用到
-         * 大概作用是存值吧、
+         * Bundle主要用于传递数据；它保存的数据，是以key-value(键值对)的形式存在的。
          */
         Bundle bundle = new Bundle();
         bundle.putString("BUNDLE_KEY_TITLE", inputTitle);
